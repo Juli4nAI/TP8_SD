@@ -2,7 +2,7 @@
 
 TP 8 de Sistemas Distribuidos.
 
-La idea es simple: un cliente contrata un plan desde una web hecha en React, y eso publica **un solo evento** en Kafka. A partir de ahí cada servicio hace lo suyo por su cuenta (facturación, aprovisionamiento, el mail y el CRM), sin que ninguno llame directamente a otro.
+La idea es que un cliente contrata un plan desde una web hecha en React, y eso publica **un solo evento** en Kafka. A partir de ahí cada servicio hace lo suyo por su cuenta (facturación, aprovisionamiento, el mail y el CRM), sin que ninguno llame directamente a otro.
 
 ## Integrantes
 
