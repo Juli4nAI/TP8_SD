@@ -1,0 +1,26 @@
+{
+  "name": "activation-poc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "POC Activación de Servicios con Kafka — Sistemas Distribuidos 2026 (UTN-FRCU)",
+  "workspaces": [
+    "libs/contracts",
+    "libs/kafka-toolkit",
+    "apps/activation-api",
+    "apps/billing-service",
+    "apps/provisioning-service",
+    "apps/notification-service",
+    "apps/crm-analytics-service",
+    "apps/loyalty-service",
+    "apps/demo-ui"
+  ],
+  "scripts": {
+    "build:libs": "npm run build -w @poc/contracts && npm run build -w @poc/kafka-toolkit",
+    "build": "npm run build:libs && npm run build -w apps/activation-api -w apps/billing-service -w apps/provisioning-service -w apps/notification-service -w apps/crm-analytics-service -w apps/loyalty-service -w apps/demo-ui",
+    "up": "docker compose up -d --build",
+    "down": "docker compose down -v"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

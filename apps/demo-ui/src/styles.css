@@ -1,0 +1,650 @@
+/* Demo UI — pensada para proyectarse al lado de Kafka UI: fondo claro, contraste alto,
+   carriles por servicio para que se vea el paralelismo de billing y provisioning. */
+
+:root {
+  --paper: #eef1f4;
+  --surface: #ffffff;
+  --ink: #172033;
+  --muted: #5d6878;
+  --line: #d3d9e1;
+
+  --lane-api: #172033;
+  --lane-billing: #0f7a84;
+  --lane-prov: #6d4bc4;
+
+  --ok: #17803d;
+  --fail: #c23a1d;
+  --comp: #b76b00;
+  --demo: #5d6878;
+
+  --sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.45 var(--sans);
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+}
+
+.shell {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+}
+
+/* ---------------------------------------------------------------- cabecera */
+
+.top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--ink);
+}
+
+h1 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.sub {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tools a {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.ws {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.ws::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--fail);
+}
+
+.ws.on::before {
+  background: var(--ok);
+  box-shadow: 0 0 0 3px rgb(23 128 61 / 0.18);
+}
+
+.banner {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-left: 4px solid var(--fail);
+  background: #fbe9e5;
+}
+
+/* ---------------------------------------------------------------- layout */
+
+.grid {
+  display: grid;
+  grid-template-columns: 330px minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 20px;
+  align-items: start;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------- formulario */
+
+.order {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.order > label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.order input,
+.order select {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  font-weight: 400;
+  font-size: 15px;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 14px;
+}
+
+legend {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.mode {
+  position: relative;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1.25;
+}
+
+.mode input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mode:has(input:focus-visible) {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.mode.on {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
+
+.hint {
+  margin: 8px 0 0;
+  min-height: 3.6em;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 8px 14px;
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  background: var(--surface);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: #e4e8ee;
+}
+
+button.primary {
+  background: var(--ink);
+  color: #fff;
+}
+
+button.primary:hover:not(:disabled) {
+  background: #2a3650;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+/* ---------------------------------------------------------------- lista */
+
+.history {
+  margin-top: 20px;
+}
+
+.history ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: 'id pill' 'cust pill';
+  gap: 0 10px;
+  text-align: left;
+  border: 1px solid transparent;
+  background: transparent;
+  font-weight: 400;
+  padding: 7px 10px;
+}
+
+.row:hover:not(:disabled) {
+  background: var(--surface);
+}
+
+.row.sel {
+  background: var(--surface);
+  border-color: var(--ink);
+}
+
+.rid {
+  grid-area: id;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.rcust {
+  grid-area: cust;
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.row .pill {
+  grid-area: pill;
+  align-self: center;
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------------------------------------------------------------- estados */
+
+.pill {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid currentColor;
+  white-space: nowrap;
+}
+
+.pill.big {
+  font-size: 15px;
+  padding: 4px 14px;
+}
+
+.p-PENDING {
+  color: var(--muted);
+}
+.p-IN_PROGRESS {
+  color: var(--comp);
+}
+.p-ACTIVE {
+  color: #fff;
+  background: var(--ok);
+  border-color: var(--ok);
+}
+.p-FAILED {
+  color: #fff;
+  background: var(--fail);
+  border-color: var(--fail);
+}
+
+/* ---------------------------------------------------------------- timeline */
+
+.stage {
+  min-width: 0;
+}
+
+.tl {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tl-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  border-top: 5px solid var(--muted);
+}
+
+.tl-head.s-ACTIVE {
+  border-top-color: var(--ok);
+}
+.tl-head.s-FAILED {
+  border-top-color: var(--fail);
+}
+.tl-head.s-IN_PROGRESS {
+  border-top-color: var(--comp);
+}
+
+.tl-head h2 {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.tl-head p {
+  margin: 0;
+}
+
+.tl-head .why {
+  margin-top: 6px;
+  color: var(--fail);
+  font-weight: 500;
+}
+
+.tl-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.tl-side button {
+  font-size: 13px;
+  padding: 5px 10px;
+}
+
+/* Carriles: una columna por servicio. Lo que está en la misma fila pasó en ese orden;
+   lo que está en distintos carriles lo hizo un servicio distinto. */
+.lanes {
+  --cols: 74px repeat(3, minmax(0, 1fr));
+  position: relative;
+}
+
+.lane-heads,
+.ev-row {
+  display: grid;
+  grid-template-columns: var(--cols);
+}
+
+.lane-heads {
+  border-bottom: 1px solid var(--line);
+}
+
+.lane-head {
+  padding: 10px 12px 8px;
+  border-top: 4px solid;
+}
+
+.lane-head b {
+  display: block;
+  font-size: 15px;
+}
+
+.lane-head small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.lane-head.l-api {
+  border-top-color: var(--lane-api);
+}
+.lane-head.l-billing {
+  border-top-color: var(--lane-billing);
+  color: var(--lane-billing);
+}
+.lane-head.l-provisioning {
+  border-top-color: var(--lane-prov);
+  color: var(--lane-prov);
+}
+
+.cell.l-billing {
+  background: rgb(15 122 132 / 0.045);
+}
+.cell.l-provisioning {
+  background: rgb(109 75 196 / 0.045);
+}
+
+.cell {
+  padding: 6px 10px;
+  border-left: 1px dashed var(--line);
+  min-height: 46px;
+}
+
+.t-col {
+  padding: 10px 8px 0 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.ev-row + .ev-row .cell,
+.lane-heads + .ev-row .cell {
+  border-top: 1px solid #edf0f3;
+}
+
+.ev {
+  display: block;
+  padding: 7px 10px 8px;
+  border-left: 4px solid var(--ink);
+  background: var(--surface);
+  border-radius: 0 6px 6px 0;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.ev.t-ok {
+  border-left-color: var(--ok);
+}
+.ev.t-fail {
+  border-left-color: var(--fail);
+}
+.ev.t-comp {
+  border-left-color: var(--comp);
+}
+.ev.t-demo {
+  border-left-color: var(--demo);
+  border-left-style: dotted;
+}
+
+.ev-type {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.t-ok .ev-type {
+  color: var(--ok);
+}
+.t-fail .ev-type {
+  color: var(--fail);
+}
+.t-comp .ev-type {
+  color: var(--comp);
+}
+
+.ev-text,
+.ev-detail {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.ev-detail {
+  color: var(--ink);
+  margin-top: 2px;
+}
+
+.ev-id {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.ev-row.fresh .ev {
+  animation: arrive 1.4s ease-out;
+}
+
+@keyframes arrive {
+  0% {
+    box-shadow: 0 0 0 3px #3b82f6;
+    transform: translateY(-4px);
+  }
+  100% {
+    box-shadow: 0 0 0 1px var(--line);
+    transform: none;
+  }
+}
+
+.wait {
+  display: inline-block;
+  padding-top: 6px;
+  font-size: 13px;
+  color: var(--muted);
+  animation: blink 1.6s ease-in-out infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.tl-foot {
+  padding: 12px 18px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.stage-empty {
+  padding: 40px 32px;
+  border: 2px dashed var(--line);
+  border-radius: 10px;
+  max-width: 62ch;
+}
+
+.stage-empty p {
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------- responsive */
+
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    padding: 16px 16px 32px;
+  }
+  .lanes {
+    --cols: 58px minmax(0, 1fr);
+  }
+  .t-col {
+    padding-left: 8px;
+    font-size: 11px;
+  }
+  /* En pantallas angostas los carriles se apilan: se muestra solo la celda con evento */
+  .lane-heads .lane-head {
+    display: none;
+  }
+  .ev-row .cell:not(:has(.ev, .wait)) {
+    display: none;
+  }
+  .ev-row .cell.l-billing .ev::before,
+  .ev-row .cell.l-provisioning .ev::before,
+  .ev-row .cell.l-api .ev::before {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .cell.l-api .ev::before {
+    content: 'activation-api';
+  }
+  .cell.l-billing .ev::before {
+    content: 'billing';
+    color: var(--lane-billing);
+  }
+  .cell.l-provisioning .ev::before {
+    content: 'provisioning';
+    color: var(--lane-prov);
+  }
+  .tl-head {
+    flex-direction: column;
+  }
+  .tl-side {
+    align-items: flex-start;
+    flex-direction: row;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ev-row.fresh .ev,
+  .wait {
+    animation: none;
+  }
+}
